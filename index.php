@@ -1,30 +1,32 @@
 <?php
 
-//Some code to compile scss
-//$scss = (new \ScssPhp\ScssPhp\Compiler());
-$scss = (new Tina4CSS());
-if ($scss->yesCompile()){
-    $scss->compile("./vendor/andrevanzuydam/tina4css/src/scss", "tina4css");
-    $scss->compile("./src/scss", "default");
+/**
+ * Tina4 - This is not a 4ramework.
+ * Copy-right 2007 - current Tina4
+ * License: MIT https://opensource.org/licenses/MIT
+ *
+ * Tina4CSS module bootstrap - compiles SCSS to CSS on load.
+ */
+
+use Tina4\Tina4CSS;
+
+$tina4css = new Tina4CSS();
+
+// Compile framework SCSS if output is missing or files have changed
+$frameworkScssPath = __DIR__ . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'scss';
+
+if ($tina4css->needsCompile('tina4css') || $tina4css->hasChanges($frameworkScssPath)) {
+    $tina4css->compile($frameworkScssPath, 'tina4css');
 }
 
+// Compile project-level SCSS if it exists
+$projectScssPath = '.' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'scss';
 
-/*
-
-if (!file_exists("./src/assets/css")) {
-    if (!mkdir("./src/assets/css", 0777, true) && !is_dir("./src/assets/css")) {
-        throw new \RuntimeException(sprintf('Directory "%s" was not created', "./src/assets/css"));
-    }
+if (is_dir($projectScssPath) && ($tina4css->needsCompile('default') || $tina4css->hasChanges($projectScssPath))) {
+    $tina4css->compile($projectScssPath, 'default');
 }
 
-$scssContent = file_get_contents(__DIR__.DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR."scss".DIRECTORY_SEPARATOR."colors.scss");
-$scssContent .= file_get_contents(__DIR__.DIRECTORY_SEPARATOR."src".DIRECTORY_SEPARATOR."scss".DIRECTORY_SEPARATOR."base.scss");
-$css = $scss->compile($scssContent);
-if (!file_exists("./src/assets/css/default.css")) {
-    file_put_contents("./src/assets/css/default.css", $css );
+// Register as a Tina4 module if the framework is available
+if (class_exists('\Tina4\Module')) {
+    \Tina4\Module::addModule("Tina4CSS", "2.0.0", "Tina4CSS - Lightweight Responsive CSS Framework");
 }
-*/
-//see if we find any other scss files and add then to the mix
-
-
-\Tina4\Module::addModule("Tina4CSS", "1.0.0", "Tina4CSS");

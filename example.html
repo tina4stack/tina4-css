@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tina4 CSS Framework - Component Showcase</title>
+    <link rel="stylesheet" href="build/tina4css.css">
+    <style>
+        /* Demo helpers — not part of the framework */
+        .demo-section { margin-bottom: 3rem; }
+        .demo-section > h2 { border-bottom: 2px solid #4a90d9; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+        .demo-box { background: #e9ecef; padding: 1rem; margin-bottom: 0.5rem; text-align: center; border-radius: 4px; }
+        .demo-color { width: 60px; height: 60px; border-radius: 8px; display: inline-block; margin: 0.25rem; }
+    </style>
+</head>
+<body>
+
+<!-- ========== NAVBAR ========== -->
+<nav class="navbar navbar-dark">
+    <a class="navbar-brand" href="#">Tina4 CSS</a>
+    <button class="navbar-toggler" onclick="document.getElementById('navContent').classList.toggle('show')">&#9776;</button>
+    <div class="navbar-collapse" id="navContent">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link active" href="#grid">Grid</a></li>
+            <li class="nav-item"><a class="nav-link" href="#typography">Typography</a></li>
+            <li class="nav-item"><a class="nav-link" href="#buttons">Buttons</a></li>
+            <li class="nav-item"><a class="nav-link" href="#forms">Forms</a></li>
+            <li class="nav-item"><a class="nav-link" href="#cards">Cards</a></li>
+            <li class="nav-item"><a class="nav-link" href="#alerts">Alerts</a></li>
+            <li class="nav-item"><a class="nav-link" href="#tables">Tables</a></li>
+            <li class="nav-item"><a class="nav-link" href="#badges">Badges</a></li>
+            <li class="nav-item"><a class="nav-link" href="#modals">Modals</a></li>
+            <li class="nav-item"><a class="nav-link" href="#utilities">Utilities</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    <!-- HERO -->
+    <div class="text-center mb-5">
+        <h1>Tina4 CSS Framework</h1>
+        <p class="lead text-muted">A lightweight, responsive CSS framework built with SCSS.<br>
+        Comparable to Bootstrap, but smaller and fully themeable with a single file.</p>
+    </div>
+
+    <!-- ========== THEME COLORS ========== -->
+    <section class="demo-section" id="colors">
+        <h2>Theme Colors</h2>
+        <p>All colors are defined as <code>!default</code> SCSS variables. Override them in your <code>theme.scss</code> before importing the framework.</p>
+        <div>
+            <span class="demo-color bg-primary" title="primary"></span>
+            <span class="demo-color bg-secondary" title="secondary"></span>
+            <span class="demo-color bg-success" title="success"></span>
+            <span class="demo-color bg-danger" title="danger"></span>
+            <span class="demo-color bg-warning" title="warning"></span>
+            <span class="demo-color bg-info" title="info"></span>
+            <span class="demo-color bg-light border" title="light"></span>
+            <span class="demo-color bg-dark" title="dark"></span>
+        </div>
+        <div class="mt-2">
+            <small class="text-muted">primary &middot; secondary &middot; success &middot; danger &middot; warning &middot; info &middot; light &middot; dark</small>
+        </div>
+    </section>
+
+    <!-- ========== GRID ========== -->
+    <section class="demo-section" id="grid">
+        <h2>Grid System</h2>
+        <p>12-column flexbox grid with responsive breakpoints: <code>sm</code>, <code>md</code>, <code>lg</code>, <code>xl</code>, <code>xxl</code>.</p>
+
+        <h4>Equal Columns</h4>
+        <div class="row mb-3">
+            <div class="col"><div class="demo-box">col</div></div>
+            <div class="col"><div class="demo-box">col</div></div>
+            <div class="col"><div class="demo-box">col</div></div>
+        </div>
+
+        <h4>Sized Columns</h4>
+        <div class="row mb-3">
+            <div class="col-4"><div class="demo-box">col-4</div></div>
+            <div class="col-4"><div class="demo-box">col-4</div></div>
+            <div class="col-4"><div class="demo-box">col-4</div></div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-3"><div class="demo-box">col-3</div></div>
+            <div class="col-6"><div class="demo-box">col-6</div></div>
+            <div class="col-3"><div class="demo-box">col-3</div></div>
+        </div>
+
+        <h4>Responsive Columns</h4>
+        <div class="row mb-3">
+            <div class="col-12 col-md-6 col-lg-4"><div class="demo-box">col-12 col-md-6 col-lg-4</div></div>
+            <div class="col-12 col-md-6 col-lg-4"><div class="demo-box">col-12 col-md-6 col-lg-4</div></div>
+            <div class="col-12 col-md-6 col-lg-4"><div class="demo-box">col-12 col-md-6 col-lg-4</div></div>
+        </div>
+
+        <h4>Offset</h4>
+        <div class="row mb-3">
+            <div class="col-4 offset-4"><div class="demo-box">col-4 offset-4</div></div>
+        </div>
+
+        <h4>Container Fluid</h4>
+        <p class="text-muted"><code>.container</code> has responsive max-widths. <code>.container-fluid</code> is always 100% width.</p>
+    </section>
+
+    <!-- ========== TYPOGRAPHY ========== -->
+    <section class="demo-section" id="typography">
+        <h2>Typography</h2>
+
+        <h1>Heading 1 <small class="text-muted">(2.25rem)</small></h1>
+        <h2>Heading 2 <small class="text-muted">(1.875rem)</small></h2>
+        <h3>Heading 3 <small class="text-muted">(1.5rem)</small></h3>
+        <h4>Heading 4 <small class="text-muted">(1.25rem)</small></h4>
+        <h5>Heading 5 <small class="text-muted">(1.125rem)</small></h5>
+        <h6>Heading 6 <small class="text-muted">(1rem)</small></h6>
+
+        <p class="lead mt-3">This is a lead paragraph. It stands out from regular paragraphs.</p>
+        <p>This is a normal paragraph with <strong>bold text</strong>, <em>italic text</em>, and <a href="#">a link</a>.</p>
+
+        <blockquote>
+            This is a blockquote. It has a left border accent.
+        </blockquote>
+
+        <p>Inline code: <code>$variable = 'hello';</code></p>
+
+        <pre><code>// Code block
+function greet(string $name): string {
+    return "Hello, {$name}!";
+}</code></pre>
+
+        <p>Keyboard shortcut: <kbd>Ctrl</kbd> + <kbd>S</kbd></p>
+
+        <h4 class="mt-3">Lists</h4>
+        <div class="row">
+            <div class="col-4">
+                <h6>Unordered</h6>
+                <ul>
+                    <li>Item one</li>
+                    <li>Item two</li>
+                    <li>Item three</li>
+                </ul>
+            </div>
+            <div class="col-4">
+                <h6>Ordered</h6>
+                <ol>
+                    <li>First</li>
+                    <li>Second</li>
+                    <li>Third</li>
+                </ol>
+            </div>
+            <div class="col-4">
+                <h6>Unstyled</h6>
+                <ul class="list-unstyled">
+                    <li>No bullets</li>
+                    <li>Clean list</li>
+                    <li>Minimal</li>
+                </ul>
+            </div>
+        </div>
+
+        <h6>Inline List</h6>
+        <ul class="list-inline">
+            <li class="list-inline-item">Home</li>
+            <li class="list-inline-item">About</li>
+            <li class="list-inline-item">Contact</li>
+        </ul>
+    </section>
+
+    <!-- ========== BUTTONS ========== -->
+    <section class="demo-section" id="buttons">
+        <h2>Buttons</h2>
+
+        <h4>Solid Buttons</h4>
+        <p>
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-secondary">Secondary</button>
+            <button class="btn btn-success">Success</button>
+            <button class="btn btn-danger">Danger</button>
+            <button class="btn btn-warning">Warning</button>
+            <button class="btn btn-info">Info</button>
+            <button class="btn btn-light">Light</button>
+            <button class="btn btn-dark">Dark</button>
+        </p>
+
+        <h4>Outline Buttons</h4>
+        <p>
+            <button class="btn btn-outline-primary">Primary</button>
+            <button class="btn btn-outline-secondary">Secondary</button>
+            <button class="btn btn-outline-success">Success</button>
+            <button class="btn btn-outline-danger">Danger</button>
+            <button class="btn btn-outline-warning">Warning</button>
+            <button class="btn btn-outline-info">Info</button>
+            <button class="btn btn-outline-dark">Dark</button>
+        </p>
+
+        <h4>Sizes</h4>
+        <p>
+            <button class="btn btn-primary btn-sm">Small</button>
+            <button class="btn btn-primary">Default</button>
+            <button class="btn btn-primary btn-lg">Large</button>
+        </p>
+
+        <h4>Block Button</h4>
+        <button class="btn btn-primary btn-block">Full Width Button</button>
+
+        <h4 class="mt-3">Disabled</h4>
+        <button class="btn btn-primary" disabled>Disabled</button>
+        <button class="btn btn-outline-secondary disabled">Disabled Outline</button>
+    </section>
+
+    <!-- ========== FORMS ========== -->
+    <section class="demo-section" id="forms">
+        <h2>Forms</h2>
+
+        <form onsubmit="return false;">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control" placeholder="Enter first name">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" placeholder="Enter last name">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control" placeholder="you@example.com">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Select Option</label>
+                <select class="form-select">
+                    <option selected>Choose...</option>
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Message</label>
+                <textarea class="form-control" rows="3" placeholder="Your message..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="check1">
+                    <label class="form-check-label" for="check1">Remember me</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="radio" id="radio1" checked>
+                    <label class="form-check-label" for="radio1">Option A</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="radio" id="radio2">
+                    <label class="form-check-label" for="radio2">Option B</label>
+                </div>
+            </div>
+
+            <h4>Validation States</h4>
+            <div class="form-group">
+                <input type="text" class="form-control is-valid" value="Looks good!">
+                <div class="valid-feedback">This field is valid.</div>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control is-invalid" value="">
+                <div class="invalid-feedback">This field is required.</div>
+            </div>
+
+            <h4>Input Group</h4>
+            <div class="input-group mb-3">
+                <span class="input-group-text">@</span>
+                <input type="text" class="form-control" placeholder="Username">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Form</button>
+        </form>
+    </section>
+
+    <!-- ========== CARDS ========== -->
+    <section class="demo-section" id="cards">
+        <h2>Cards</h2>
+
+        <div class="row">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header">Featured</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Card Title</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Simple Card</h5>
+                        <p class="card-text">A card without a header, just body content.</p>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Updated 3 mins ago
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <h5 class="card-title">Colored Card</h5>
+                        <p class="card-text">Cards can use background utility classes for color.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== ALERTS ========== -->
+    <section class="demo-section" id="alerts">
+        <h2>Alerts</h2>
+
+        <div class="alert alert-primary">This is a <strong>primary</strong> alert.</div>
+        <div class="alert alert-secondary">This is a <strong>secondary</strong> alert.</div>
+        <div class="alert alert-success">This is a <strong>success</strong> alert.</div>
+        <div class="alert alert-danger">This is a <strong>danger</strong> alert.</div>
+        <div class="alert alert-warning">This is a <strong>warning</strong> alert.</div>
+        <div class="alert alert-info">This is an <strong>info</strong> alert.</div>
+        <div class="alert alert-light">This is a <strong>light</strong> alert.</div>
+        <div class="alert alert-dark">This is a <strong>dark</strong> alert.</div>
+
+        <h4>Dismissible Alert</h4>
+        <div class="alert alert-success alert-dismissible" id="dismissAlert">
+            <strong>Well done!</strong> You can dismiss this alert.
+            <button class="btn-close" onclick="document.getElementById('dismissAlert').style.display='none'">&times;</button>
+        </div>
+    </section>
+
+    <!-- ========== TABLES ========== -->
+    <section class="demo-section" id="tables">
+        <h2>Tables</h2>
+
+        <h4>Default Table</h4>
+        <table class="table">
+            <thead>
+                <tr><th>#</th><th>Name</th><th>Email</th><th>Role</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>Andre van Zuydam</td><td>andre@example.com</td><td>Admin</td></tr>
+                <tr><td>2</td><td>Jane Smith</td><td>jane@example.com</td><td>Editor</td></tr>
+                <tr><td>3</td><td>Bob Wilson</td><td>bob@example.com</td><td>User</td></tr>
+            </tbody>
+        </table>
+
+        <h4>Striped &amp; Bordered</h4>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr><th>Product</th><th>Price</th><th>Qty</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Widget A</td><td>R 25.00</td><td>10</td><td>R 250.00</td></tr>
+                <tr><td>Widget B</td><td>R 15.00</td><td>20</td><td>R 300.00</td></tr>
+                <tr><td>Widget C</td><td>R 45.00</td><td>5</td><td>R 225.00</td></tr>
+            </tbody>
+        </table>
+
+        <h4>Hover Table</h4>
+        <table class="table table-hover table-sm">
+            <thead>
+                <tr><th>ID</th><th>Status</th><th>Created</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>001</td><td><span class="badge badge-success">Active</span></td><td>2026-03-14</td></tr>
+                <tr><td>002</td><td><span class="badge badge-warning">Pending</span></td><td>2026-03-13</td></tr>
+                <tr><td>003</td><td><span class="badge badge-danger">Inactive</span></td><td>2026-03-12</td></tr>
+            </tbody>
+        </table>
+
+        <h4>Responsive Table</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr><th>Col 1</th><th>Col 2</th><th>Col 3</th><th>Col 4</th><th>Col 5</th><th>Col 6</th><th>Col 7</th><th>Col 8</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Data</td><td>Data</td><td>Data</td><td>Data</td><td>Data</td><td>Data</td><td>Data</td><td>Data</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ========== BADGES ========== -->
+    <section class="demo-section" id="badges">
+        <h2>Badges</h2>
+
+        <p>
+            <span class="badge badge-primary">Primary</span>
+            <span class="badge badge-secondary">Secondary</span>
+            <span class="badge badge-success">Success</span>
+            <span class="badge badge-danger">Danger</span>
+            <span class="badge badge-warning">Warning</span>
+            <span class="badge badge-info">Info</span>
+            <span class="badge badge-light">Light</span>
+            <span class="badge badge-dark">Dark</span>
+        </p>
+
+        <h4>Badges in Headings</h4>
+        <h3>Example heading <span class="badge badge-primary">New</span></h3>
+        <h5>Notifications <span class="badge badge-danger">4</span></h5>
+
+        <h4>Badges in Buttons</h4>
+        <button class="btn btn-primary">
+            Messages <span class="badge badge-light">9</span>
+        </button>
+    </section>
+
+    <!-- ========== NAVIGATION ========== -->
+    <section class="demo-section" id="navigation">
+        <h2>Navigation</h2>
+
+        <h4>Nav Links</h4>
+        <ul class="nav">
+            <li class="nav-item"><a class="nav-link active" href="#">Active</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Link</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Link</a></li>
+            <li class="nav-item"><a class="nav-link disabled" href="#">Disabled</a></li>
+        </ul>
+
+        <h4 class="mt-3">Breadcrumb</h4>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Library</a></li>
+                <li class="breadcrumb-item active">Data</li>
+            </ol>
+        </nav>
+
+        <h4>Light Navbar</h4>
+        <nav class="navbar navbar-light rounded mb-3">
+            <a class="navbar-brand" href="#">Brand</a>
+            <ul class="navbar-nav" style="flex-direction: row; gap: 0.5rem;">
+                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+            </ul>
+        </nav>
+    </section>
+
+    <!-- ========== MODALS ========== -->
+    <section class="demo-section" id="modals">
+        <h2>Modals</h2>
+        <p>Click the button to toggle the modal. Uses simple JS to add/remove the <code>.show</code> class.</p>
+
+        <button class="btn btn-primary" onclick="document.getElementById('demoModal').classList.add('show'); document.getElementById('demoBackdrop').classList.add('show');">
+            Open Modal
+        </button>
+
+        <div class="modal" id="demoModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal Title</h5>
+                        <button class="btn-close" onclick="document.getElementById('demoModal').classList.remove('show'); document.getElementById('demoBackdrop').classList.remove('show');">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>This is the modal body. You can put any content here.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="document.getElementById('demoModal').classList.remove('show'); document.getElementById('demoBackdrop').classList.remove('show');">Close</button>
+                        <button class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop" id="demoBackdrop" onclick="document.getElementById('demoModal').classList.remove('show'); this.classList.remove('show');"></div>
+    </section>
+
+    <!-- ========== UTILITIES ========== -->
+    <section class="demo-section" id="utilities">
+        <h2>Utilities</h2>
+
+        <h4>Text Colors</h4>
+        <p>
+            <span class="text-primary">Primary</span> &middot;
+            <span class="text-secondary">Secondary</span> &middot;
+            <span class="text-success">Success</span> &middot;
+            <span class="text-danger">Danger</span> &middot;
+            <span class="text-warning">Warning</span> &middot;
+            <span class="text-info">Info</span> &middot;
+            <span class="text-muted">Muted</span>
+        </p>
+
+        <h4>Background Colors</h4>
+        <div class="d-flex gap-2 mb-3">
+            <div class="bg-primary text-white p-2 rounded">Primary</div>
+            <div class="bg-success text-white p-2 rounded">Success</div>
+            <div class="bg-danger text-white p-2 rounded">Danger</div>
+            <div class="bg-warning p-2 rounded">Warning</div>
+            <div class="bg-info text-white p-2 rounded">Info</div>
+        </div>
+
+        <h4>Spacing</h4>
+        <p class="text-muted">Margin (<code>.m-</code>) and padding (<code>.p-</code>) utilities from 0-5. Directions: <code>t</code> (top), <code>b</code> (bottom), <code>s</code> (start/left), <code>e</code> (end/right).</p>
+        <div class="bg-light p-3 mb-2"><code>.p-3</code> — Padding level 3</div>
+        <div class="bg-light p-1 mb-2"><code>.p-1</code> — Padding level 1</div>
+
+        <h4>Display</h4>
+        <p><code>.d-none</code>, <code>.d-block</code>, <code>.d-flex</code>, <code>.d-inline</code>, <code>.d-inline-block</code>, <code>.d-grid</code></p>
+        <p>Responsive: <code>.d-md-none</code>, <code>.d-lg-flex</code>, etc.</p>
+
+        <h4>Flexbox</h4>
+        <div class="d-flex justify-content-between bg-light p-2 mb-2 rounded">
+            <div class="bg-primary text-white p-2 rounded">1</div>
+            <div class="bg-primary text-white p-2 rounded">2</div>
+            <div class="bg-primary text-white p-2 rounded">3</div>
+        </div>
+        <p class="text-muted"><code>.d-flex .justify-content-between</code></p>
+
+        <h4>Text Alignment</h4>
+        <p class="text-start bg-light p-2"><code>.text-start</code></p>
+        <p class="text-center bg-light p-2"><code>.text-center</code></p>
+        <p class="text-end bg-light p-2"><code>.text-end</code></p>
+
+        <h4>Font Sizes</h4>
+        <p class="fs-1">fs-1</p>
+        <p class="fs-3">fs-3</p>
+        <p class="fs-5">fs-5</p>
+
+        <h4>Width &amp; Height</h4>
+        <div class="bg-light p-2 mb-2">
+            <div class="bg-primary text-white p-1 w-25 rounded mb-1">.w-25</div>
+            <div class="bg-primary text-white p-1 w-50 rounded mb-1">.w-50</div>
+            <div class="bg-primary text-white p-1 w-75 rounded mb-1">.w-75</div>
+            <div class="bg-primary text-white p-1 w-100 rounded">.w-100</div>
+        </div>
+
+        <h4>Borders &amp; Rounded</h4>
+        <div class="d-flex gap-3 mb-3">
+            <div class="border p-3">.border</div>
+            <div class="border rounded p-3">.rounded</div>
+            <div class="border rounded-pill p-3">.rounded-pill</div>
+            <div class="border rounded-circle p-3" style="width:60px;height:60px;text-align:center;line-height:1.2"><small>circle</small></div>
+        </div>
+
+        <h4>Shadows</h4>
+        <div class="d-flex gap-3 mb-3">
+            <div class="shadow-sm p-3 bg-white rounded">.shadow-sm</div>
+            <div class="shadow p-3 bg-white rounded">.shadow</div>
+            <div class="shadow-lg p-3 bg-white rounded">.shadow-lg</div>
+        </div>
+
+        <h4>Visibility</h4>
+        <p><code>.visible</code>, <code>.invisible</code>, <code>.overflow-hidden</code>, <code>.overflow-auto</code></p>
+
+        <h4>Position</h4>
+        <p><code>.position-relative</code>, <code>.position-absolute</code>, <code>.position-fixed</code>, <code>.position-sticky</code></p>
+
+        <h4>Screen Reader</h4>
+        <p><code>.sr-only</code> / <code>.visually-hidden</code> — Hides content visually but keeps it accessible to screen readers.</p>
+    </section>
+
+    <!-- ========== THEMING ========== -->
+    <section class="demo-section" id="theming">
+        <h2>Theming</h2>
+        <p>Create a <code>theme.scss</code> file in your project's <code>src/scss/</code> directory. Define your colors <strong>before</strong> importing the framework — all variables use <code>!default</code> so yours take priority.</p>
+
+        <pre><code>// theme.scss — Your custom theme
+$primary:   #e74c3c;
+$secondary: #2c3e50;
+$success:   #27ae60;
+$danger:    #c0392b;
+$warning:   #f39c12;
+$info:      #3498db;
+
+$font-family-base: 'Inter', sans-serif;
+$border-radius: 0.5rem;
+
+// Import the framework after your overrides
+@import 'tina4';</code></pre>
+
+        <p>That's it! Every button, alert, badge, form focus ring, and utility class will automatically use your colors.</p>
+    </section>
+
+    <!-- FOOTER -->
+    <hr>
+    <footer class="text-center text-muted mb-4">
+        <p>Tina4 CSS Framework &copy; 2007 - 2026 Tina4 &middot; MIT License</p>
+        <p><strong>Sponsored with love by <a href="https://codeinfinity.co.za/about-open-source-policy?utm_source=github&utm_medium=website&utm_campaign=opensource_campaign&utm_id=opensource">Code Infinity</a></strong></p>
+        <p><em>Supporting open source communities - Innovate - Code - Empower</em></p>
+    </footer>
+
+</div>
+
+</body>
+</html>
