@@ -1,0 +1,32 @@
+{
+  "name": "tina4-css",
+  "version": "2.0.0",
+  "description": "A lightweight, responsive CSS framework (~24KB minified) — grid, buttons, forms, cards, nav, modals, alerts, tables, badges, utilities. Part of the Tina4 ecosystem.",
+  "main": "dist/tina4.min.css",
+  "style": "dist/tina4.min.css",
+  "sass": "src/scss/tina4.scss",
+  "files": [
+    "dist/",
+    "src/scss/"
+  ],
+  "keywords": [
+    "css",
+    "scss",
+    "framework",
+    "responsive",
+    "grid",
+    "flexbox",
+    "lightweight",
+    "tina4"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tina4stack/tina4-css.git"
+  },
+  "author": "Tina4 Stack",
+  "license": "MIT",
+  "homepage": "https://tina4.com",
+  "bugs": {
+    "url": "https://github.com/tina4stack/tina4-css/issues"
+  }
+}

@@ -87,18 +87,6 @@
   &.show { display: flex; }
 }
 
-// Responsive expand classes
-@each $bp, $px in $breakpoints {
-  .navbar-expand-#{$bp} {
-    @media (min-width: $px) {
-      .navbar-nav { flex-direction: row; }
-      .navbar-collapse { display: flex; flex-basis: auto; }
-      .navbar-toggler { display: none; }
-    }
-  }
-}
-
-// Legacy: bare .navbar also expands at lg
 @media (min-width: map-get($breakpoints, lg)) {
   .navbar-nav {
     flex-direction: row;

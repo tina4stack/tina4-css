@@ -1,6 +1,6 @@
 # Tina4 CSS
 
-A lightweight, responsive CSS framework built with SCSS — comparable to Bootstrap but much smaller (~50KB minified). Part of the [Tina4](https://github.com/tina4stack) PHP ecosystem.
+A lightweight, responsive CSS framework built with SCSS — comparable to Bootstrap but much smaller (~24KB minified). Works with **any** web framework: PHP, Python, Ruby, JavaScript, or plain HTML.
 
 ## Features
 
@@ -20,39 +20,91 @@ A lightweight, responsive CSS framework built with SCSS — comparable to Bootst
 
 ## Installing
 
+Choose your package manager:
+
 ```bash
+# PHP (Composer)
 composer require tina4stack/tina4css
+
+# JavaScript / Node.js (npm)
+npm install tina4-css
+
+# Python (pip / uv)
+pip install tina4-css
+
+# Ruby (gem)
+gem install tina4-css
+
+# Or just grab the CSS file — no build tools needed
+curl -o tina4.min.css https://raw.githubusercontent.com/tina4stack/tina4-css/main/dist/tina4.min.css
 ```
-
-### Requirements
-
-- PHP >= 8.1
-- [scssphp/scssphp](https://github.com/scssphp/scssphp) ^2.0 (installed automatically)
 
 ## Quick Start
 
-```php
-<?php
-require 'vendor/autoload.php';
+### Plain HTML (zero dependencies)
 
+Download `dist/tina4.min.css` and link it:
+
+```html
+<link rel="stylesheet" href="tina4.min.css">
+```
+
+### PHP (Tina4 or any framework)
+
+```php
 use Tina4\Tina4CSS;
 
-// Compile framework SCSS to CSS
 $css = new Tina4CSS('./public/css');
 $css->compile(__DIR__ . '/vendor/tina4stack/tina4css/src/scss', 'tina4css');
 ```
 
-Then in your HTML:
-```html
-<link rel="stylesheet" href="/public/css/tina4css.css">
+### Python (Tina4 or any framework)
+
+Tina4 Python auto-compiles SCSS from `src/scss/`. Copy the SCSS files there, or use the pre-compiled CSS:
+
+```python
+# Option 1: Use pre-compiled CSS (copy to your static folder)
+from tina4_css import css_path
+print(css_path())  # "/path/to/tina4_css/dist/tina4.min.css"
+
+# Option 2: Copy SCSS to src/scss/ for theming
+from tina4_css import scss_path
+print(scss_path())  # "/path/to/tina4_css/scss/"
+```
+
+Or simply copy `dist/tina4.min.css` into `src/public/css/`:
+
+```bash
+cp $(python -c "from tina4_css import css_path; print(css_path())") src/public/css/tina4.min.css
+```
+
+### Ruby (Tina4 or any framework)
+
+```ruby
+require "tina4-css"
+
+# Get path to pre-compiled CSS
+Tina4CSS.css_path          # => "/path/to/tina4.min.css"
+Tina4CSS.scss_path         # => "/path/to/scss/"
+```
+
+### JavaScript / Node.js
+
+```javascript
+// Import the CSS path
+const path = require("path");
+const cssPath = path.join(require.resolve("tina4-css"), "..", "dist", "tina4.min.css");
+
+// Or import in your bundler (Vite, Webpack, etc.)
+import "tina4-css/dist/tina4.min.css";
 ```
 
 ## Theming
 
-Create a `theme.scss` file in your project's `src/scss/` directory. Define your colors **before** importing the framework — all variables use `!default` so yours take priority:
+Create a `theme.scss` file in your project. Define your colors **before** importing the framework — all variables use `!default` so yours take priority:
 
 ```scss
-// src/scss/theme.scss — Your custom theme
+// theme.scss — Your custom theme
 
 // Override any of these colors
 $primary:   #e74c3c;
@@ -235,36 +287,74 @@ See [example.html](example.html) for a complete showcase of all components.
 ## File Structure
 
 ```
-src/
-├── app/
-│   └── Tina4CSS.php          # SCSS compiler class
-└── scss/
-    ├── _variables.scss        # Design tokens (all !default)
-    ├── _reset.scss            # Modern CSS reset
-    ├── _typography.scss       # Headings, lists, code, kbd
-    ├── _grid.scss             # 12-column flexbox grid
-    ├── _buttons.scss          # Solid + outline buttons
-    ├── _forms.scss            # Inputs, selects, checkboxes, validation
-    ├── _cards.scss            # Card components
-    ├── _nav.scss              # Navbar, nav links, breadcrumbs
-    ├── _modals.scss           # Modal dialogs
-    ├── _alerts.scss           # Alert messages
-    ├── _tables.scss           # Table styles
-    ├── _badges.scss           # Badge labels
-    ├── _utilities.scss        # Utility classes
-    ├── tina4.scss             # Main entry (imports all)
-    ├── base.scss              # Base entry
-    └── colors.scss            # CSS custom properties
+tina4-css/
+├── dist/                          # Pre-compiled CSS (ready to use)
+│   ├── tina4.css                  # Expanded (~30KB)
+│   ├── tina4.min.css              # Minified (~24KB)
+│   ├── base.min.css               # Base only (no colors)
+│   └── colors.min.css             # CSS custom properties only
+├── src/
+│   ├── app/
+│   │   └── Tina4CSS.php           # PHP SCSS compiler class
+│   └── scss/
+│       ├── _variables.scss        # Design tokens (all !default)
+│       ├── _reset.scss            # Modern CSS reset
+│       ├── _typography.scss       # Headings, lists, code, kbd
+│       ├── _grid.scss             # 12-column flexbox grid
+│       ├── _buttons.scss          # Solid + outline buttons
+│       ├── _forms.scss            # Inputs, selects, checkboxes, validation
+│       ├── _cards.scss            # Card components
+│       ├── _nav.scss              # Navbar, nav links, breadcrumbs
+│       ├── _modals.scss           # Modal dialogs
+│       ├── _alerts.scss           # Alert messages
+│       ├── _tables.scss           # Table styles
+│       ├── _badges.scss           # Badge labels
+│       ├── _utilities.scss        # Utility classes
+│       ├── tina4.scss             # Main entry (imports all)
+│       ├── base.scss              # Base entry
+│       └── colors.scss            # CSS custom properties
+├── tina4_css/                     # Python package
+│   └── __init__.py                # css_path(), scss_path() helpers
+├── composer.json                  # PHP package
+├── package.json                   # npm package
+├── pyproject.toml                 # Python package
+├── tina4-css.gemspec              # Ruby gem
+└── example.html                   # Full component showcase
 ```
 
-## Tina4 Module Integration
+## Framework Integration
 
-When used within a Tina4 project, the module auto-registers and compiles SCSS on load:
+### Tina4 PHP
 
 ```php
-// index.php (auto-loaded by Tina4)
+// Auto-loaded when installed via composer
 $tina4css = new \Tina4\Tina4CSS();
 $tina4css->compile(__DIR__ . '/src/scss', 'tina4css');
+```
+
+### Tina4 Python
+
+The framework auto-compiles any SCSS in `src/scss/`. To use tina4-css with custom theming:
+
+1. Copy the SCSS files to `src/scss/`
+2. Create your `theme.scss` with overrides
+3. The framework compiles everything on startup
+
+Or just use the pre-compiled CSS — copy `dist/tina4.min.css` to `src/public/css/`.
+
+### Tina4 Ruby
+
+```ruby
+# In your app, copy the CSS to your public folder or
+# configure your asset pipeline to include the gem's dist/ path
+require "tina4-css"
+```
+
+### Tina4 JS
+
+```javascript
+// In your entry point or HTML
+import "tina4-css/dist/tina4.min.css";
 ```
 
 ## License
@@ -275,8 +365,8 @@ MIT — see [LICENSE](LICENSE) for details.
 
 ## Our Sponsors
 
-**Sponsored with 🩵 by Code Infinity**
+**Sponsored with love by Code Infinity**
 
 [<img src="https://codeinfinity.co.za/wp-content/uploads/2025/09/c8e-logo-github.png" alt="Code Infinity" width="100">](https://codeinfinity.co.za/about-open-source-policy?utm_source=github&utm_medium=website&utm_campaign=opensource_campaign&utm_id=opensource)
 
-*Supporting open source communities <span style="color: #1DC7DE;">•</span> Innovate <span style="color: #1DC7DE;">•</span> Code <span style="color: #1DC7DE;">•</span> Empower*
+*Supporting open source communities - Innovate - Code - Empower*

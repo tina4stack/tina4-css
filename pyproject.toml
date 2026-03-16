@@ -1,0 +1,27 @@
+[project]
+name = "tina4-css"
+version = "2.0.0"
+description = "Lightweight responsive CSS framework (~24KB minified) — grid, buttons, forms, cards, nav, modals, alerts, tables, badges, utilities."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Tina4 Stack", email = "info@tina4.com"}]
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Tina4",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = ["css", "scss", "framework", "responsive", "tina4"]
+
+[project.urls]
+Homepage = "https://tina4.com"
+Repository = "https://github.com/tina4stack/tina4-css"
+
+[build-system]
+requires = ["setuptools>=45"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-data]
+tina4_css = ["dist/*.css", "scss/**/*.scss"]

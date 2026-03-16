@@ -131,57 +131,9 @@ $spacing-dirs: (
 .shadow-lg   { box-shadow: $shadow-lg !important; }
 .shadow-none { box-shadow: none !important; }
 
-// Collapse
-.collapse { display: none; &.show { display: block; } }
-
-// Fade transition
-.fade { opacity: 0; transition: opacity 0.15s linear; &.show { opacity: 1; } }
-
 // Misc
 .clearfix::after { display: block; clear: both; content: ""; }
 .cursor-pointer { cursor: pointer !important; }
-
-// Close button (replaces Bootstrap's btn-close)
-.btn-close {
-  box-sizing: content-box;
-  width: 1em;
-  height: 1em;
-  padding: 0.25em;
-  color: $black;
-  background: transparent;
-  border: 0;
-  opacity: 0.5;
-  cursor: pointer;
-  font-size: 1.25rem;
-  line-height: 1;
-  &:hover { opacity: 0.75; }
-  &:focus { opacity: 1; outline: 0; box-shadow: 0 0 0 0.2rem rgba($primary, 0.25); }
-}
-
-// Image utilities
-.img-fluid    { max-width: 100%; height: auto; }
-.img-thumbnail {
-  padding: 0.25rem;
-  background-color: $body-bg;
-  border: 1px solid rgba($black, 0.1);
-  border-radius: $border-radius;
-  max-width: 100%;
-  height: auto;
-}
-
-// Border top/bottom helpers
-.border-top    { border-top: 1px solid rgba($black, 0.1) !important; }
-.border-bottom { border-bottom: 1px solid rgba($black, 0.1) !important; }
-
-// Vertical alignment
-.align-middle  { vertical-align: middle !important; }
-.align-top     { vertical-align: top !important; }
-.align-bottom  { vertical-align: bottom !important; }
-
-// Float
-.float-start { float: left !important; }
-.float-end   { float: right !important; }
-.float-none  { float: none !important; }
 
 // Screen reader only
 .visually-hidden {
