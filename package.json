@@ -1,14 +1,22 @@
 {
   "name": "tina4-css",
-  "version": "2.0.0",
-  "description": "A lightweight, responsive CSS framework (~24KB minified) — grid, buttons, forms, cards, nav, modals, alerts, tables, badges, utilities. Part of the Tina4 ecosystem.",
+  "version": "2.1.0",
+  "description": "Lightweight CSS framework + Frond JS helper for server-rendered apps. Grid, buttons, forms, cards, nav, modals, alerts, AJAX, WebSocket, SSE. Zero dependencies.",
   "main": "dist/tina4.min.css",
   "style": "dist/tina4.min.css",
   "sass": "src/scss/tina4.scss",
   "files": [
     "dist/",
-    "src/scss/"
+    "src/scss/",
+    "src/js/"
   ],
+  "scripts": {
+    "build:frond": "esbuild src/js/frond.ts --bundle --minify --format=iife --global-name=_frondModule --outfile=dist/frond.min.js --footer:js=\"/* Frond v2 — tina4.com */\"",
+    "build:frond:dev": "esbuild src/js/frond.ts --bundle --format=iife --global-name=_frondModule --outfile=dist/frond.js --sourcemap"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  },
   "keywords": [
     "css",
     "scss",
@@ -17,6 +25,10 @@
     "grid",
     "flexbox",
     "lightweight",
+    "ajax",
+    "websocket",
+    "sse",
+    "frond",
     "tina4"
   ],
   "repository": {
