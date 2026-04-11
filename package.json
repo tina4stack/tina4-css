@@ -1,6 +1,6 @@
 {
   "name": "tina4-css",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Lightweight CSS framework + Frond JS helper for server-rendered apps. Grid, buttons, forms, cards, nav, modals, alerts, AJAX, WebSocket, SSE. Zero dependencies.",
   "main": "dist/tina4.min.css",
   "style": "dist/tina4.min.css",

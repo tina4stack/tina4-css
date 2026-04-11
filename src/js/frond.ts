@@ -181,6 +181,17 @@ function request(
       // Not JSON — keep raw
     }
 
+    // Detect XHR-followed redirect: if responseURL differs from the
+    // requested URL, the server issued a 3xx redirect. Navigate the
+    // browser instead of injecting the redirected page's HTML.
+    if (xhr.responseURL) {
+      const requested = new URL(url, window.location.href).href;
+      if (xhr.responseURL !== requested) {
+        window.location.href = xhr.responseURL;
+        return;
+      }
+    }
+
     if (xhr.status >= 200 && xhr.status < 400) {
       if (opts.onSuccess) opts.onSuccess(content, xhr.status, xhr);
     } else {
