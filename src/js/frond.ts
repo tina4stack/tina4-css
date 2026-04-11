@@ -861,6 +861,40 @@ function report(url: string): void {
 }
 
 // =====================================================================
+// frond.graphql() — GraphQL query helper
+// =====================================================================
+
+/**
+ * Execute a GraphQL query or mutation via POST.
+ *
+ * @param url       - GraphQL endpoint URL.
+ * @param query     - GraphQL query string.
+ * @param variables - Optional variables object.
+ * @param callback  - Optional callback with (data, errors).
+ */
+function graphql(
+  url: string,
+  query: string,
+  variables?: Record<string, unknown>,
+  callback?: (data: unknown, errors?: unknown[]) => void,
+): void {
+  request(url, {
+    method: "POST",
+    body: { query: query, variables: variables || {} },
+    onSuccess: function (response: any) {
+      if (callback) {
+        callback(response.data || null, response.errors || undefined);
+      }
+    },
+    onError: function (status: number) {
+      if (callback) {
+        callback(null, [{ message: "GraphQL request failed with status " + status }]);
+      }
+    },
+  });
+}
+
+// =====================================================================
 // Namespace object
 // =====================================================================
 
@@ -887,6 +921,8 @@ const frond = {
   popup: popup,
   /** Open PDF report in new window. */
   report: report,
+  /** Execute a GraphQL query/mutation. */
+  graphql: graphql,
 
   /** Current bearer token (read/write). */
   get token(): string | null {

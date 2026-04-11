@@ -75,6 +75,7 @@ src/scss/
 | `frond.message(text, type?)` | Show alert in #message |
 | `frond.popup(url, title, w, h)` | Centred popup |
 | `frond.report(url)` | Open PDF in new window |
+| `frond.graphql(query, variables?, url?)` | Execute GraphQL query/mutation |
 | `frond.token` | Bearer token (read/write) |
 
 ## Cross-Framework Packaging
