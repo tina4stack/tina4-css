@@ -65,6 +65,13 @@ var _frondModule = (() => {
         content = JSON.parse(content);
       } catch {
       }
+      if (xhr.responseURL) {
+        const requested = new URL(url, window.location.href).href;
+        if (xhr.responseURL !== requested) {
+          window.location.href = xhr.responseURL;
+          return;
+        }
+      }
       if (xhr.status >= 200 && xhr.status < 400) {
         if (opts.onSuccess) opts.onSuccess(content, xhr.status, xhr);
       } else {
@@ -535,6 +542,22 @@ var _frondModule = (() => {
       "toolbar=no,scrollbars=yes,resizable=yes,width=800,height=600,top=0,left=0"
     );
   }
+  function graphql(url, query, variables, callback) {
+    request(url, {
+      method: "POST",
+      body: { query, variables: variables || {} },
+      onSuccess: function(response) {
+        if (callback) {
+          callback(response.data || null, response.errors || void 0);
+        }
+      },
+      onError: function(status) {
+        if (callback) {
+          callback(null, [{ message: "GraphQL request failed with status " + status }]);
+        }
+      }
+    });
+  }
   var frond = {
     /** Core HTTP request. */
     request,
@@ -558,6 +581,8 @@ var _frondModule = (() => {
     popup,
     /** Open PDF report in new window. */
     report,
+    /** Execute a GraphQL query/mutation. */
+    graphql,
     /** Current bearer token (read/write). */
     get token() {
       return _token;
@@ -571,4 +596,5 @@ var _frondModule = (() => {
   }
   return __toCommonJS(frond_exports);
 })();
+/* Frond v2.1.3 — tina4.com */
 //# sourceMappingURL=frond.js.map
