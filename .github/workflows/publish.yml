@@ -1,0 +1,106 @@
+name: Publish to npm + Packagist
+
+# Why this exists: tina4-css had no publish automation, so a version tag updated
+# Packagist (via the GitHub webhook) but never npm. npm `tina4-css` drifted to
+# 2.0.0 while Packagist reached 2.1.4. This workflow publishes both on a version
+# tag, the same shape the backend + tina4-js repos use.
+#
+# NOTE: the published files (dist/tina4.min.css, dist/tina4js.min.js, dist/frond.min.js)
+# are committed artifacts. dist/tina4js.min.js is VENDORED from the tina4-js repo,
+# so refresh + commit it BEFORE tagging a release here (see the tina4-js 1.4.1 lesson).
+
+on:
+  push:
+    tags:
+      # Backend/tina4-css convention: bare semver tags (2.1.4), no leading v.
+      - '[0-9]+.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish (e.g. 2.1.4). Must already exist in the repo.'
+        required: true
+        type: string
+
+permissions:
+  contents: write     # create the GitHub Release
+  id-token: write     # npm provenance (sigstore)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # workflow_dispatch checks out HEAD by default; force the supplied tag
+          # so we publish from the right commit.
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Verify package.json version matches tag
+        run: |
+          PKG="$(node -p "require('./package.json').version")"
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          TAG="${TAG#v}"
+          if [ "$PKG" != "$TAG" ]; then
+            echo "::error::package.json ($PKG) does not match tag ($TAG). Bump package.json before tagging."
+            exit 1
+          fi
+          echo "Version check passed: $TAG"
+
+      - name: Publish to npm
+        # --access public: tina4-css is an unscoped package.
+        # dist/ + src/scss + src/js ship per the package.json "files" allowlist.
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Notify Packagist
+        # Belt-and-braces: the GitHub->Packagist webhook already updates
+        # tina4stack/tina4css on a tag, but nudge it here too when a token exists.
+        env:
+          PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
+        run: |
+          if [ -n "${PACKAGIST_TOKEN}" ]; then
+            curl -s -XPOST "https://packagist.org/api/update-package?username=tina4stack&apiToken=${PACKAGIST_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d '{"repository":{"url":"https://github.com/tina4stack/tina4-css"}}'
+            echo "Packagist notified."
+          else
+            echo "PACKAGIST_TOKEN not set - relying on the GitHub->Packagist webhook."
+          fi
+
+      - name: Extract release notes from tag commit body
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          git log -1 "$TAG" --pretty=%B \
+            | awk '/^Co-Authored-By:/ { skip=1 } !skip { print }' \
+            | sed -e :a -e '/^[[:space:]]*$/{$d;N;ba' -e '}' \
+            > /tmp/release-notes.md
+          echo "-- release notes --"
+          cat /tmp/release-notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          body_path: /tmp/release-notes.md
+          make_latest: legacy
+
+      - name: Verify it landed
+        run: |
+          sleep 5
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          EXPECTED="${TAG#v}"
+          PUBLISHED=$(npm view tina4-css@"$EXPECTED" version 2>&1 || echo "NOT_FOUND")
+          if [ "$PUBLISHED" != "$EXPECTED" ]; then
+            echo "::warning::Registry shows '$PUBLISHED', expected '$EXPECTED'. Possibly propagation lag."
+          else
+            echo "tina4-css@$PUBLISHED is live on npm"
+          fi
