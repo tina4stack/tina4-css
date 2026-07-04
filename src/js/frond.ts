@@ -906,6 +906,155 @@ function graphql(
 }
 
 // =====================================================================
+// frond.live() — server-rendered live blocks ({% live %})
+// =====================================================================
+//
+// Scans for elements the Frond {% live %} tag emits:
+//   <div data-frond-live="name" data-mode="poll|ws|sse" ...>first paint</div>
+// and keeps their content fresh over the declared transport, swapping new
+// server-rendered HTML in with a keyed morph so focus, scroll, and form
+// state survive a refresh. Auto-runs on DOMContentLoaded.
+
+function _liveKey(el: Element): string | null {
+  const d = (el as HTMLElement).dataset;
+  return d && d.key ? d.key : null;
+}
+
+function _liveSyncAttrs(oldNode: Element, newNode: Element): void {
+  const na = newNode.attributes;
+  for (let i = 0; i < na.length; i++) {
+    const a = na[i];
+    if (oldNode.getAttribute(a.name) !== a.value) oldNode.setAttribute(a.name, a.value);
+  }
+  const oa = Array.prototype.slice.call(oldNode.attributes) as Attr[];
+  oa.forEach(function (a: Attr) {
+    if (!newNode.hasAttribute(a.name)) oldNode.removeAttribute(a.name);
+  });
+}
+
+function _liveMorphNode(oldNode: Element, newNode: Element): void {
+  const tag = newNode.tagName;
+  // Never clobber a live form control — this is what preserves focus + value.
+  if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+  _liveSyncAttrs(oldNode, newNode);
+  if (oldNode.children.length || newNode.children.length) {
+    _liveReconcile(oldNode, newNode);
+  } else if (oldNode.innerHTML !== newNode.innerHTML) {
+    oldNode.innerHTML = newNode.innerHTML;
+  }
+}
+
+function _liveReconcile(parent: Element, next: Element): void {
+  const oldKids = Array.prototype.slice.call(parent.children) as Element[];
+  const newKids = Array.prototype.slice.call(next.children) as Element[];
+  const oldByKey: Record<string, Element> = {};
+  oldKids.forEach(function (c) {
+    const k = _liveKey(c);
+    if (k) oldByKey[k] = c;
+  });
+  const order: Element[] = [];
+  for (let i = 0; i < newKids.length; i++) {
+    const nk = newKids[i];
+    const k = _liveKey(nk);
+    let match: Element | null = null;
+    if (k && oldByKey[k]) {
+      match = oldByKey[k];
+    } else if (!k && oldKids[i] && !_liveKey(oldKids[i]) && oldKids[i].tagName === nk.tagName) {
+      match = oldKids[i];
+    }
+    if (match && match.tagName === nk.tagName) {
+      _liveMorphNode(match, nk);
+      reused.push(match);
+      order.push(match);
+    } else {
+      order.push(nk);
+    }
+  }
+  // Minimal-move ordering: only insert a node when it is out of place. Moving a
+  // node that is already correctly positioned (e.g. a focused input) would blur
+  // it, so we leave in-place nodes untouched.
+  let cursor = parent.firstElementChild;
+  for (let i = 0; i < order.length; i++) {
+    const node = order[i];
+    if (node === cursor) {
+      cursor = cursor.nextElementSibling;
+    } else {
+      parent.insertBefore(node, cursor);
+    }
+  }
+  oldKids.forEach(function (c) {
+    if (order.indexOf(c) === -1 && c.parentNode === parent) parent.removeChild(c);
+  });
+  void reused;
+}
+
+function _liveSwap(container: Element, html: string): void {
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  if (!tmp.children.length || !container.children.length) {
+    container.innerHTML = html;
+    return;
+  }
+  _liveReconcile(container, tmp);
+}
+
+function _liveWsUrl(path: string): string {
+  if (/^wss?:\/\//.test(path)) return path;
+  const proto = (typeof location !== "undefined" && location.protocol === "https:") ? "wss" : "ws";
+  return proto + "://" + location.host + path;
+}
+
+function _liveExtract(msg: any, name: string | null): string | null {
+  if (msg && typeof msg === "object") {
+    if (msg.type === "live") {
+      if (name && msg.name && msg.name !== name) return null;
+      return msg.html != null ? String(msg.html) : null;
+    }
+    return null;
+  }
+  return typeof msg === "string" ? msg : null;
+}
+
+/**
+ * Wire every {% live %} block found under `root` (default: document).
+ * poll and ws update live in v1; sse emits a console warning until its
+ * server stream lands. Idempotent: a block is wired at most once.
+ */
+function liveInit(root?: Element | Document): void {
+  if (typeof document === "undefined") return;
+  const scope: Element | Document = root || document;
+  const blocks = scope.querySelectorAll("[data-frond-live]");
+  Array.prototype.slice.call(blocks).forEach(function (el: any) {
+    if (el.__frondLive) return;
+    el.__frondLive = true;
+    const mode = el.getAttribute("data-mode");
+    const name = el.getAttribute("data-frond-live");
+    if (mode === "poll") {
+      const src = el.getAttribute("data-src");
+      const interval = (parseInt(el.getAttribute("data-interval"), 10) || 5) * 1000;
+      const timer = setInterval(function () {
+        if (typeof document !== "undefined" && document.hidden) return;
+        request(src, { method: "GET", onSuccess: function (data: any) {
+          _liveSwap(el, typeof data === "string" ? data : String(data));
+        } });
+      }, interval);
+      el.__frondLiveStop = function () { clearInterval(timer); };
+    } else if (mode === "ws") {
+      const sock = wsConnect(_liveWsUrl(el.getAttribute("data-ws")));
+      sock.on("message", function (msg: any) {
+        const h = _liveExtract(msg, name);
+        if (h !== null) _liveSwap(el, h);
+      });
+      el.__frondLiveStop = function () { sock.close(); };
+    } else if (mode === "sse") {
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[frond.live] sse transport is not wired yet (v1 supports poll and ws); block '" + name + "' shows first paint only. Use poll or ws.");
+      }
+    }
+  });
+}
+
+// =====================================================================
 // Namespace object
 // =====================================================================
 
@@ -924,6 +1073,8 @@ const frond = {
   ws: wsConnect,
   /** Server-Sent Events with auto-reconnect. */
   sse: sseConnect,
+  /** Wire {% live %} blocks (poll/ws) with keyed morph. Auto-runs on DOMContentLoaded. */
+  live: liveInit,
   /** Cookie helpers: get, set, remove. */
   cookie: cookie,
   /** Display alert message in #message element. */
@@ -956,6 +1107,13 @@ declare global {
 
 if (typeof window !== "undefined") {
   window.frond = frond;
+  if (typeof document !== "undefined") {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", function () { liveInit(); });
+    } else {
+      liveInit();
+    }
+  }
 }
 
 export { frond };
