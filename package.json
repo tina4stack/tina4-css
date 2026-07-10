@@ -12,10 +12,12 @@
   ],
   "scripts": {
     "build:frond": "esbuild src/js/frond.ts --bundle --minify --format=iife --global-name=_frondModule --outfile=dist/frond.min.js --footer:js=\"/* Frond v2.2.0 - tina4.com */\"",
-    "build:frond:dev": "esbuild src/js/frond.ts --bundle --format=iife --global-name=_frondModule --outfile=dist/frond.js --sourcemap --footer:js=\"/* Frond v2.2.0 - tina4.com */\""
+    "build:frond:dev": "esbuild src/js/frond.ts --bundle --format=iife --global-name=_frondModule --outfile=dist/frond.js --sourcemap --footer:js=\"/* Frond v2.2.0 - tina4.com */\"",
+    "test:frond": "node --test tests/frond.test.mjs"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.0",
+    "jsdom": "^26.0.0"
   },
   "keywords": [
     "css",
