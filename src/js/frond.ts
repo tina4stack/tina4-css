@@ -30,8 +30,10 @@ interface RequestOptions {
   headers?: Record<string, string>;
   /** Success callback. */
   onSuccess?: (data: unknown, status: number, xhr: XMLHttpRequest) => void;
-  /** Error callback. */
+  /** Error callback — fires on a non-2xx response, a transport error, or a timeout (status 0). */
   onError?: (status: number, xhr: XMLHttpRequest) => void;
+  /** Request timeout in ms (default: 30000). Set 0 to disable. */
+  timeout?: number;
 }
 
 /** Callback shorthand for frond.request(). */
@@ -203,6 +205,15 @@ function request(
     if (opts.onError) opts.onError(xhr.status, xhr);
   };
 
+  // Timeout — a hung socket resolves via onError (status 0) instead of stranding.
+  // Default 30s; opts.timeout = 0 opts out (unbounded, the pre-timeout behaviour).
+  if (opts.timeout !== 0) {
+    xhr.timeout = opts.timeout || 30000;
+    xhr.ontimeout = function () {
+      if (opts.onError) opts.onError(xhr.status, xhr);
+    };
+  }
+
   xhr.send(body);
 }
 
@@ -283,11 +294,13 @@ function inject(html: string, target: string | null): string {
  * @param url      - URL to fetch.
  * @param target   - DOM id to inject into (default: "content").
  * @param callback - Optional callback with (processedHTML, rawData).
+ * @param onError  - Optional error callback — fires on non-2xx, transport error, or timeout.
  */
 function load(
   url: string,
   target?: string,
   callback?: (html: string, raw?: unknown) => void,
+  onError?: (status: number, xhr: XMLHttpRequest) => void,
 ): void {
   const targetId = target || "content";
 
@@ -301,6 +314,7 @@ function load(
         if (callback) callback(data as string);
       }
     },
+    onError: onError,
   });
 }
 
@@ -315,12 +329,14 @@ function load(
  * @param data     - Request body.
  * @param target   - DOM id to inject into.
  * @param callback - Optional callback with (processedHTML, rawData).
+ * @param onError  - Optional error callback — fires on non-2xx, transport error, or timeout.
  */
 function post(
   url: string,
   data: unknown,
   target?: string,
   callback?: (html: string, raw?: unknown) => void,
+  onError?: (status: number, xhr: XMLHttpRequest) => void,
 ): void {
   const targetId = target || "content";
 
@@ -341,6 +357,7 @@ function post(
 
       if (callback) callback(html, responseData);
     },
+    onError: onError,
   });
 }
 
@@ -410,15 +427,17 @@ const form = {
    * @param url      - URL to POST to.
    * @param target   - DOM id to inject response into (default: "message").
    * @param callback - Optional callback.
+   * @param onError  - Optional error callback — fires on non-2xx, transport error, or timeout.
    */
   submit: function (
     formId: string,
     url: string,
     target?: string,
     callback?: (html: string, raw?: unknown) => void,
+    onError?: (status: number, xhr: XMLHttpRequest) => void,
   ): void {
     const data = form.collect(formId);
-    post(url, data, target || "message", callback);
+    post(url, data, target || "message", callback, onError);
   },
 
   /**
@@ -431,12 +450,14 @@ const form = {
    * @param url     - URL to fetch.
    * @param target  - DOM id to inject into (default: "form").
    * @param callback - Optional callback.
+   * @param onError  - Optional error callback — fires on non-2xx, transport error, or timeout.
    */
   show: function (
     action: string,
     url: string,
     target?: string,
     callback?: (data: unknown) => void,
+    onError?: (status: number, xhr: XMLHttpRequest) => void,
   ): void {
     let method = action.toUpperCase();
     if (action === "create" || action === "edit") method = "GET";
@@ -460,6 +481,7 @@ const form = {
 
         if (callback) callback(html);
       },
+      onError: onError,
     });
   },
 };
