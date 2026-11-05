@@ -110,6 +110,19 @@ interface ManagedStream {
 /** Bearer token managed across requests via the FreshToken header. */
 let _token: string | null = null;
 
+/**
+ * True when `url` resolves to the page's own origin. The managed bearer is
+ * sent only there, and a FreshToken is taken only from there, so a call to
+ * another site can neither read the token nor replace it.
+ */
+function _sameOrigin(url: string): boolean {
+  try {
+    return new URL(url, window.location.href).origin === window.location.origin;
+  } catch {
+    return false;
+  }
+}
+
 // =====================================================================
 // frond.request() — Core HTTP
 // =====================================================================
@@ -118,7 +131,8 @@ let _token: string | null = null;
  * Perform an XHR request.
  *
  * Automatically attaches the current Bearer token (if any) and refreshes
- * it from the `FreshToken` response header.
+ * it from the `FreshToken` response header, for same-origin URLs only. To
+ * authenticate to another origin, pass `Authorization` in `options.headers`.
  *
  * @param url      - Request URL.
  * @param options  - RequestOptions object, or a simple callback function.
@@ -140,8 +154,9 @@ function request(
   const xhr = new XMLHttpRequest();
   xhr.open(method, url, true);
 
-  // Bearer token
-  if (_token !== null) {
+  // Bearer token: same origin only, never handed to another site
+  const sameOrigin = _sameOrigin(url);
+  if (_token !== null && sameOrigin) {
     xhr.setRequestHeader("Authorization", "Bearer " + _token);
   }
 
@@ -169,9 +184,11 @@ function request(
   }
 
   xhr.onload = function () {
-    // Rotate token
+    // Rotate token, only from our own origin (also after a redirect)
     const freshToken = xhr.getResponseHeader("FreshToken");
-    if (freshToken && freshToken !== "") {
+    const answeredBySameOrigin =
+      sameOrigin && (!xhr.responseURL || _sameOrigin(xhr.responseURL));
+    if (freshToken && freshToken !== "" && answeredBySameOrigin) {
       _token = freshToken;
     }
 
@@ -370,8 +387,12 @@ const form = {
    * Collect all form field values into a FormData object.
    *
    * Handles inputs, selects, textareas, file uploads (including
-   * multi-file), checkboxes, and radio buttons. Updates formToken
-   * hidden fields automatically.
+   * multi-file), checkboxes, and radio buttons.
+   *
+   * A `formToken` field is sent as the server rendered it. frond never
+   * writes the bearer into it: the bearer travels in the Authorization
+   * header (own origin only), and the server accepts only a form token in
+   * the formToken slot.
    *
    * @param formId - DOM id of the form (without '#').
    * @returns Populated FormData instance.
@@ -384,11 +405,6 @@ const form = {
 
     for (let i = 0; i < elements.length; i++) {
       const el = elements[i] as HTMLInputElement;
-
-      // Inject current token into hidden formToken field
-      if (el.name === "formToken" && _token !== null) {
-        el.value = _token;
-      }
 
       if (!el.name) continue;
 
