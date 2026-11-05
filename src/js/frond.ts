@@ -428,6 +428,18 @@ const form = {
         } else if (el.type !== "radio") {
           fd.append(el.name, "0");
         }
+      } else if (el.type === "select-multiple") {
+        // A <select multiple> sends every selected option, skipping any option
+        // (or whole optgroup) that is disabled, so the server sees exactly what
+        // the user could choose.
+        const options = (el as unknown as HTMLSelectElement).selectedOptions;
+        for (let o = 0; o < options.length; o++) {
+          const option = options[o];
+          const group = option.parentElement;
+          if (option.disabled) continue;
+          if (group instanceof HTMLOptGroupElement && group.disabled) continue;
+          fd.append(el.name, option.value);
+        }
       } else {
         fd.append(el.name, el.value === "" ? "" : el.value);
       }
